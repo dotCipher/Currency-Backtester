@@ -1,0 +1,25 @@
+package cur_backtest;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.table.*;
+
+public class CurrencyBacktester {
+	// HERE'S THE WINDOW ITSELF
+	private static JFrame window;
+	
+	private static JMenuBar menuBar;
+	private static JMenu fileMenu;
+	private static JMenuItem exitMenuItem;
+	private static JMenuItem openMenuItem;
+	private static JButton calculateButton;
+	
+	public static void main(String[] args){
+		
+	}
+}

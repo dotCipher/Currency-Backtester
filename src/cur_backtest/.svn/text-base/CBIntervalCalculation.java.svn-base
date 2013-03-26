@@ -1,0 +1,81 @@
+package cur_backtest;
+
+import java.util.*;
+
+import cur_backtest.data.*;
+
+public class CBIntervalCalculation {
+	private CBIntervalTable table;
+	private double scale;
+	private double momentum;
+	
+	private int successfulLongs;
+	private int failedLongs;
+	private int successfulShorts;
+	private int failedShorts;
+	
+	private double succussfulLongPercent;
+	private double failedLongPercent;
+	private double successfulShortPercent;
+	private double failedShortPercent;
+	
+	public CBIntervalCalculation(CBIntervalTable initTable, 
+			double initScale, double initMomentum){
+		// Table that was loaded from file input
+		table = initTable;
+		
+		// Values selection input: (1.0, 0.1, 0.01, or 0.001)
+		// (default = 0.1)
+		if(initScale == 1.0 || initScale == 0.1 
+				|| initScale == 0.01 || initScale == 0.001){
+			scale = initScale;
+		}
+		else{
+			scale = 0.1;
+		}
+		
+		// Values selection input: (0.01-0.99) correct final for 1% or 99%
+		//	(default = 0.75 or 75%)
+		if(initMomentum >= 0.01 && initMomentum <= 0.99){
+			momentum = initMomentum;
+		}
+		else{
+			momentum = 0.75;
+		}
+		momentum = initMomentum; 
+	}
+	
+	public void runCalculations(){
+		int[] finalVals = calculateFinalIntValues();
+		
+	}
+	
+	// Precondition:  table, scale, and momentum must be instantiated
+	public int[] calculateFinalIntValues(){
+		// result[0] = successfulLongs
+		// result[1] = failedLongs
+		// result[2] = successfulShorts
+		// result[3] = failedShorts
+		int[] result = new int[4];
+		Iterator<CBIntervalRecord> records = table.recordsIterator();
+		CBIntervalRecord tempRecord = null;
+		
+		// Create buying or selling value arrayList
+		ArrayList<Double> setValues = new ArrayList<Double>();
+		
+		
+		// Go through each element
+		while(records.hasNext()){
+			tempRecord = records.next();
+			double low = tempRecord.getLowValue();
+			double high = tempRecord.getHighValue();
+			double temp = low;
+			while(temp < high){
+				/* TODO:  THE PART OF CODE I AM UP TOO */
+			
+			}
+		}
+		
+		return null;
+	}
+}

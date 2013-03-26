@@ -1,0 +1,10 @@
+package cur_backtest;
+
+public class CBFileManager {
+
+	public static void processExitProgramRequest() {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

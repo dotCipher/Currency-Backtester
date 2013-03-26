@@ -1,0 +1,49 @@
+- - - - - LONG - - - - -
+START:
+1.3000
+
+WATCH:
+1.3050
+
+BUY:
+1.3750
+
+SELL:
+1.4000
+
+OR
+
+SELL AT LOSS:
+1.3050
+
+
+
+// NOTE: isOrderOpen() will check if elements 
+//		are in the OrderStack
+// ALGORITHM USED:
+// 1a)  Remember starting point average of first high and low points
+// 1b)  point_index = 0
+// 2)  Calculate upwards and downwards scale points
+// 3)  If Low/High of the next value from array[point_index] hits
+//     "Watch" and isOrderOpen() returns true;
+//       do OrderStack++;
+//		 add to stack the new order
+// 4)  If Low/High of next value from array[point_index] hits 
+//     "Buy or Sell" Level,
+//        do buy_num++; or sell_num++; 
+//        and point_index++;			
+//      end;	// 5a)  If Low/Highof next value from array[point_index] hits
+//	  	next scale level for any outstanding orders then,
+//			do good_buy_num++; or good_sell_num++;
+//			and point_index++;
+//		end;
+// 5b)	If Low/High value of the next value from array[point_index] hit
+//		original "Watch" value, then:
+//			do bad_buy_num++; or bad_sell_num++;
+//			and point_index++;
+//		end;
+// 6)	If NextCBInterval() == null then:
+//			If isOrderOpen() == true then:
+//				CloseAllOrders();
+//			ExitLoop();
+//			Display Results();

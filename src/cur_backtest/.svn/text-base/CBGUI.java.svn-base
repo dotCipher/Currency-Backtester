@@ -1,0 +1,267 @@
+package cur_backtest;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.*;
+
+import cur_backtest.events.CBWindowHandler;
+
+public class CBGUI {
+	// HERE'S THE WINDOW ITSELF
+	private static JFrame window;
+	
+	// MENU BAR
+	private static JMenuBar menuBar;
+	private static JMenu fileMenu;
+	private static JMenuItem exitMenuItem;
+	private static JMenuItem openMenuItem;
+	
+	// OPTION PANEL
+	private static JPanel optPanel;
+	private static TitledBorder optPanelTitle;
+	private static JLabel optAlgLabel;
+	private static JComboBox optAlgComboBox;
+	private static JLabel optIntScLabel;
+	private static JComboBox optIntScComboBox;
+	private static JButton optCalcButton;
+	
+	// OUTPUT PANEL
+	private static JPanel outPanel;
+	private static TitledBorder outPanelTitle;
+	// - Successes sub-panel
+	private static JPanel outSucPanel;
+	private static TitledBorder outSucPanelTitle;
+	// - - Shorts
+	private static JLabel outSucPanelShortNumLabel;
+	private static JTextField outSucPanelShortNumField;
+	private static JLabel outSucPanelShortPerLabel;
+	private static JTextField outSucPanelShortPerField;
+	// - - Longs
+	private static JLabel outSucPanelLongNumLabel;
+	private static JTextField outSucPanelLongNumField;
+	private static JLabel outSucPanelLongPerLabel;
+	private static JTextField outSucPanelLongPerField;
+	// - - Total
+	private static JLabel outSucPanelTotalNumLabel;
+	private static JTextField outSucPanelTotalNumField;
+	private static JLabel outSucPanelTotalPerLabel;
+	private static JTextField outSucPanelTotalPerField;
+	// - Failures sub-panel
+	private static JPanel outFailPanel;
+	private static TitledBorder outFailPanelTitle;
+	// - - Shorts
+	private static JLabel outFailPanelShortNumLabel;
+	private static JTextField outFailPanelShortNumField;
+	private static JLabel outFailPanelShortPerLabel;
+	private static JTextField outFailPanelShortPerField;
+	// - - Longs
+	private static JLabel outFailPanelLongNumLabel;
+	private static JTextField outFailPanelLongNumField;
+	private static JLabel outFailPanelLongPerLabel;
+	private static JTextField outFailPanelLongPerField;
+	// - - Total
+	private static JLabel outFailPanelTotalNumLabel;
+	private static JTextField outFailPanelTotalNumField;
+	private static JLabel outFailPanelTotalPerLabel;
+	private static JTextField outFailPanelTotalPerField;
+	
+	// TABLE STATS PANEL
+	private static JPanel tblStatPanel;
+	
+	// LOADED DATA TABLE
+	private static JTable table;
+	private static DefaultTableModel tableModel;
+	
+	public static JFrame 	getWindow()	{	return window;	}
+	
+	public static void initWindow(){
+		window = new JFrame("Currency Backtester");
+		
+		//window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		// SET SIZE
+		window.setSize(700, 600);
+		window.setResizable(false);
+	}
+	
+	private static void layoutMenuBar(){
+		// NORTH MENU BAR
+		menuBar = new JMenuBar();
+		// FILE MENU
+		fileMenu = new JMenu("File");
+		// OPEN DATA FILE
+		openMenuItem = new JMenuItem("Open");
+		// EXIT PROGRAM MENU ITEM
+		exitMenuItem = new JMenuItem("Exit");
+		// ADD TO MENU
+		fileMenu.add(openMenuItem);
+		fileMenu.addSeparator();
+		fileMenu.add(exitMenuItem);
+		// ADD TO MENU BAR
+		menuBar.add(fileMenu);
+		
+		// ADD TO WINDOW
+		window.setJMenuBar(menuBar);
+	}
+	
+	private static void layoutOptionsPanel(){
+		optPanel = new JPanel();
+		optPanel.setLayout(new GridBagLayout());
+		optPanelTitle = BorderFactory.createTitledBorder("Options");
+		optPanel.setBorder(optPanelTitle);
+		
+		// ALGORITHMS
+		String[] algs = {"Momentum"};
+		optAlgLabel = new JLabel("Algorithm:");
+		optAlgComboBox = new JComboBox(algs);
+		
+		// INTERVAL SCALES
+		String[] intScls = {"1.0", "0.1", "0.01", "0.001"};
+		optIntScLabel = new JLabel("Interval Scale:");
+		optIntScComboBox = new JComboBox(intScls);
+		optIntScComboBox.setSelectedIndex(2);
+		
+		optCalcButton = new JButton("CALCULATE");
+		
+		// ADD TO PANEL
+		addJComponentToContainerUsingGBL(
+				optAlgLabel, optPanel, 0, 0, 1, 1);
+		addJComponentToContainerUsingGBL(
+				optAlgComboBox, optPanel, 1, 0, 1, 1);
+		addJComponentToContainerUsingGBL(
+				optIntScLabel, optPanel, 0, 1, 1, 1);
+		addJComponentToContainerUsingGBL(
+				optIntScComboBox, optPanel, 1, 1, 1, 1);
+		addJComponentToContainerUsingGBL(
+				optCalcButton, optPanel, 0, 2, 2, 1);
+		
+		// ADD TO WINDOW
+		addJComponentToContainerUsingGBL(
+				optPanel, window, 0, 0, 1, 1);
+	}
+	
+	private static void layoutOuputPanel(){
+		outPanel = new JPanel();
+		outPanelTitle = BorderFactory.createTitledBorder("Output");
+		// - Successes sub-panel
+		outSucPanel = new JPanel();
+		outSucPanelTitle = BorderFactory.createTitledBorder("Successes");
+		// - - Shorts
+		outSucPanelShortNumLabel = new JLabel();
+		outSucPanelShortNumField = new JTextField();
+		outSucPanelShortPerLabel = new JLabel();
+		outSucPanelShortPerField = new JTextField();
+		// - - Longs
+		outSucPanelLongNumLabel = new JLabel();
+		outSucPanelLongNumField = new JTextField();
+		outSucPanelLongPerLabel = new JLabel();
+		outSucPanelLongPerField = new JTextField();
+		// - - Total
+		outSucPanelTotalNumLabel = new JLabel();
+		outSucPanelTotalNumField = new JTextField();
+		outSucPanelTotalPerLabel = new JLabel();
+		outSucPanelTotalPerField = new JTextField();
+		// - Failures sub-panel
+		outFailPanel = new JPanel();
+		outFailPanelTitle = BorderFactory.createTitledBorder("Failures");
+		// - - Shorts
+		outFailPanelShortNumLabel = new JLabel();
+		outFailPanelShortNumField = new JTextField();
+		outFailPanelShortPerLabel = new JLabel();
+		outFailPanelShortPerField = new JTextField();
+		// - - Longs
+		outFailPanelLongNumLabel = new JLabel();
+		outFailPanelLongNumField = new JTextField();
+		outFailPanelLongPerLabel = new JLabel();
+		outFailPanelLongPerField = new JTextField();
+		// - - Total
+		outFailPanelTotalNumLabel = new JLabel();
+		outFailPanelTotalNumField = new JTextField();
+		outFailPanelTotalPerLabel = new JLabel();
+		outFailPanelTotalPerField = new JTextField();
+	}
+	
+	private static void layoutTable(){
+		// THIS WILL RENDER OUR SPREADSHEET
+		table = new JTable();
+		Font tableFont = new Font("Arial", Font.PLAIN, 20);
+		table.setFont(tableFont);
+		table.setRowHeight(25);
+		Font headerFont = new Font("Serif", Font.BOLD, 24);
+		table.getTableHeader().setFont(headerFont);
+		table.setColumnSelectionAllowed(false);
+		table.setRowSelectionAllowed(false);
+		
+		// THIS WILL HOLD THE DATA IN OUR SPREADSHEET
+		tableModel = new DefaultTableModel();
+		table.setModel(tableModel);
+		
+		// WE WANT THE TABLE TO SCROLL IF NECESSARY
+		JScrollPane jsp = new JScrollPane(table);
+		
+		// LAY OUT INSIDE FRAME
+		addJComponentToContainerUsingGBL(
+				jsp, window, 1, 0, 1, 2);
+	}
+	
+	private static void layoutTableStats(){
+		
+	}
+	
+	public static void layoutGUI(){
+		window.setLayout(new GridBagLayout());
+		layoutMenuBar();
+		layoutOptionsPanel();
+		layoutOuputPanel();
+		layoutTable();
+		layoutTableStats();
+	}
+	
+	public static void initHandlers(){
+		CBWindowHandler cbWindowHandler = new CBWindowHandler();
+		window.addWindowListener(cbWindowHandler);
+	}
+	
+	public static void addJComponentToContainerUsingGBL(
+			JComponent jc, Container c, int x, int y, int w, int h){
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = x;
+		gbc.gridy = y;
+		gbc.gridwidth = w;
+		gbc.gridheight = h;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.insets = new Insets(5,5,5,5);
+		c.add(jc, gbc);
+	}
+	
+	public static void centerWindow(JFrame window){
+	    // Get the size of the screen
+	    Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+	    
+	    // Determine the new location of the window
+	    int w = window.getSize().width;
+	    int h = window.getSize().height;
+	    int x = (dim.width-w)/2;
+	    int y = (dim.height-h)/2;
+	    
+	    // Move the window
+	    window.setLocation(x, y);
+	}
+	
+	public static void main(String[] args){
+		initWindow();
+		layoutGUI();
+		initHandlers();
+		window.setVisible(true);
+		
+		// CENTER WINDOW
+		centerWindow(window);
+	}
+}
